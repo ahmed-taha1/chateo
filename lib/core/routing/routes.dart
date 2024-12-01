@@ -2,7 +2,7 @@ enum Routes{
   onboardingView('/'),
   loginView('/login'),
   homeView('/home'),
-  registerView('/register');
+  chatView('/chat');
 
   final String path;
   const Routes(this.path);

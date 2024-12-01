@@ -57,19 +57,19 @@ class _CustomInputFieldState extends State<CustomInputTextField> {
         filled: false,
         // fillColor: Theme.of(context).hoverColor,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide(color: Theme.of(context).primaryColorLight),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide(color: Theme.of(context).primaryColorLight),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(30),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide(color: Theme.of(context).primaryColorLight),
         ),
         contentPadding: EdgeInsets.only(

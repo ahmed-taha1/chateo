@@ -1,9 +1,14 @@
 import 'package:chateo/core/theming/text_styles.dart';
 import 'package:chateo/core/widgets/custom_input_text_field.dart';
 import 'package:chateo/core/widgets/spacing.dart';
-import 'package:chateo/features/communities/ui/widgets/commuinity_tile.dart';
+import 'package:chateo/features/communities/logic/communities_cubit.dart';
+import 'package:chateo/features/communities/ui/widgets/communities_bloc_listener.dart';
+import 'package:chateo/features/communities/ui/widgets/community_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/routing/routes.dart';
 
 class CommunitiesView extends StatelessWidget {
   const CommunitiesView({super.key});
@@ -34,19 +39,39 @@ class CommunitiesView extends StatelessWidget {
               ),
             ),
             verticalSpace(30.h),
-            CommuinityTile(
-              imagePath: "assets/svgs/islam.jpg",
-              title: "Islam",
-              isSubscribed: false,
-              onPressed: (){},
+            Expanded(
+              child: ListView.builder(
+                itemCount: context.read<CommunitiesCubit>().communities.length,
+                itemBuilder: (context, index) {
+                  final community =
+                      context.read<CommunitiesCubit>().communities[index];
+                  return Column(
+                    children: [
+                      CommunityTile(
+                        imagePath: community.image,
+                        title: community.name,
+                        isSubscribed: community.isSubscribed,
+                        onPressed: () {
+                          context.push(
+                            Routes.chatView.path,
+                            extra: {
+                              "phoneNumber": context.read<CommunitiesCubit>().phoneNumber,
+                              "chatId": community.name,
+                            },
+                          );
+                        },
+                        onSubscribe: () =>
+                            context.read<CommunitiesCubit>().subscribe(index),
+                        onUnsubscribe: () =>
+                            context.read<CommunitiesCubit>().unsubscribe(index),
+                      ),
+                      verticalSpace(30.h),
+                    ],
+                  );
+                },
+              ),
             ),
-            verticalSpace(30.h),
-            CommuinityTile(
-              imagePath: "assets/svgs/codeforces.jpg",
-              title: "Codeforces",
-              isSubscribed: false,
-              onPressed: (){},
-            ),
+            const CommunitiesBlocListener(),
           ],
         ),
       ),

@@ -12,6 +12,7 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final phoneController = TextEditingController();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -48,7 +49,7 @@ class LoginView extends StatelessWidget {
                   Expanded(
                     child: CustomInputTextField(
                       hintText: "Phone Number",
-                      controller: TextEditingController(),
+                      controller: phoneController,
                       keyboardType: TextInputType.phone,
                     ),
                   ),
@@ -56,8 +57,12 @@ class LoginView extends StatelessWidget {
               ),
               verticalSpace(40.h),
               CustomButton(
-                  text: "Continute",
-                  onPressed: () => context.go(Routes.homeView.path)),
+                text: "Continute",
+                onPressed: () => context.go(
+                  Routes.homeView.path,
+                  extra: "+02${phoneController.text}",
+                ),
+              ),
             ],
           ),
         ),
