@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class MessageTile extends StatelessWidget {
   final bool isSentByMe;
   final String message;
-
+  final String phoneNumber;
   const MessageTile(
-      {required this.message, required this.isSentByMe, super.key});
+      {required this.message, required this.isSentByMe, super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,26 @@ class MessageTile extends StatelessWidget {
                     bottomRight: Radius.circular(23),
                   ),
           ),
-          child: Text(
-            message,
-            style: TextStyle(
-              color: isSentByMe ? Colors.white : Colors.black,
-              fontSize: 17,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              !isSentByMe
+                  ? Text(
+                      phoneNumber,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      ),
+                    )
+                  : Container(),
+              Text(
+                message,
+                style: TextStyle(
+                  color: isSentByMe ? Colors.white : Colors.black,
+                  fontSize: 17,
+                ),
+              ),
+            ],
           ),
         ),
       ],

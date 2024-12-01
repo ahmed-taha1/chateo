@@ -63,11 +63,12 @@ class ChatView extends StatelessWidget {
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
                             final message =
-                                messages[messages.length - 1 - index];
+                                messages[index];
                             return MessageTile(
                               isSentByMe:
                                   message.sender == chatBloc.phoneNumber,
                               message: message.message,
+                              phoneNumber: message.sender,
                             );
                           },
                         );
