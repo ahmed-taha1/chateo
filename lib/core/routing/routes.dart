@@ -3,6 +3,8 @@ enum Routes{
   loginView('/login'),
   registerView('/register'),
   homeView('/home'),
+  addNumberView('/addNumberView'),
+  loginWithPhoneNumber('/loginWithPhoneNumber'),
   chatView('/chat');
 
   final String path;

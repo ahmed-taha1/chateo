@@ -93,33 +93,3 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-
-/*
-              Text(
-                textAlign: TextAlign.center,
-                "Let's Start Chatting with your friends and family",
-                style: TextStyles.font15BlackPurpleMedium.copyWith(
-                  color: Theme.of(context).secondaryHeaderColor,
-                ),
-              ),
-              verticalSpace(40.h),
-              Row(
-                children: [
-                  Text(
-                    "+02 ",
-                    style: TextStyles.font20BlackPurpleSemiBold.copyWith(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 20.sp,
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomInputTextField(
-                      hintText: "Phone Number",
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                    ),
-                  ),
-                ],
-              ),
-
- */

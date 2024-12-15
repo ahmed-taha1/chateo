@@ -11,6 +11,7 @@ class CacheServiceConstants {
   static const String tempPinToken = 'tempPinToken';
   static const String tempOtpToken = 'tempOtpToken';
   static const String phoneNumber = 'phoneNumber';
+  static const String userId = 'userId';
 }
 
 class CacheService {
@@ -51,5 +52,6 @@ class CacheService {
     await removeData(key: CacheServiceConstants.tempOtpToken);
     await removeData(key: CacheServiceConstants.key);
     await removeData(key: CacheServiceConstants.phoneNumber);
+    await removeData(key: CacheServiceConstants.userId);
   }
 }

@@ -1,5 +1,3 @@
-import 'package:chateo/core/widgets/snack_bar.dart';
-import 'package:chateo/features/authentication/logic/authentication_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,9 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/routes.dart';
 import '../../../../core/widgets/custom_loading.dart';
+import '../../../../core/widgets/snack_bar.dart';
+import '../../logic/authentication_cubit.dart';
 
-class LoginBlocListener extends StatelessWidget {
-  const LoginBlocListener({super.key});
+class AddPhoneNumberBlocListener extends StatelessWidget {
+  const AddPhoneNumberBlocListener({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +19,11 @@ class LoginBlocListener extends StatelessWidget {
           showCustomLoading();
         } else {
           EasyLoading.dismiss();
-          if (state is AuthenticationLoginSuccess) {
+          if (state is AuthenticationLoginWithGoogleSuccess) {
             context.go(Routes.homeView.path);
           } else if (state is AuthenticationFailed) {
             showSnackBar(
                 context: context, message: state.message, color: Colors.red);
-          } else if(state is AuthenticationLoginWithGooglePhoneNumberMissing){
-            EasyLoading.dismiss();
-            context.go(Routes.addNumberView.path);
           }
         }
       },

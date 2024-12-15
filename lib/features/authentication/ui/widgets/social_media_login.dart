@@ -1,6 +1,9 @@
+import 'package:chateo/core/routing/routes.dart';
+import 'package:chateo/features/on_boarding/on_boarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theming/text_styles.dart';
 import '../../../../core/widgets/spacing.dart';
@@ -48,7 +51,9 @@ class SocialMediaLogin extends StatelessWidget {
             ),
             horizontalSpace(20),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                context.push(Routes.loginWithPhoneNumber.path);
+              },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(

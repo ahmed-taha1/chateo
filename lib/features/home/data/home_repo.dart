@@ -22,11 +22,11 @@ class HomeRepo {
           .add({'phoneNumber': phoneNumber, 'subscribed_communities': []});
     }
     else if(users.docs[0].data()['subscribed_communities'] == null){
-      users.docs[0].reference.update({'subscribed_communities': []});
+      await users.docs[0].reference.update({'subscribed_communities': []});
     }
     log("fetching communities");
     for (var i in communities.docs) {
-      bool isSubscribed = users.docs.isEmpty ? false : users.docs[0]
+      bool? isSubscribed = users.docs.isEmpty ? false : users.docs[0]
           .data()['subscribed_communities']
           .contains(i.data()['name']);
 
@@ -34,7 +34,7 @@ class HomeRepo {
         Community.fromJson(
           i.data(),
           i.id,
-          isSubscribed: isSubscribed,
+          isSubscribed: isSubscribed ?? false,
         ),
       );
     }
