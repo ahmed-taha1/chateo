@@ -20,7 +20,6 @@ Future<void> backgroundNotificationHandler(RemoteMessage message) async {
 }
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
   Bloc.observer = MyBlocObserver();
