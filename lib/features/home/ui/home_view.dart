@@ -1,3 +1,4 @@
+import 'package:chateo/core/services/cache_service.dart';
 import 'package:chateo/core/widgets/custom_button.dart';
 import 'package:chateo/features/chats/ui/chats_view.dart';
 import 'package:chateo/features/communities/logic/communities_cubit.dart';
@@ -15,29 +16,34 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var communitiesView = BlocProvider(
+      create: (context) => CommunitiesCubit(
+          communities: context.read<HomeCubit>().communities,
+          phoneNumber: context.read<HomeCubit>().phoneNumber,
+          communitiesRepo: getIt()),
+      child: const CommunitiesView(),
+    );
     return Scaffold(
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeChangeIndex && state.index == 1) {
-            return BlocProvider(
-              create: (context) => CommunitiesCubit(
-                communities: context.read<HomeCubit>().communities,
-                phoneNumber: context.read<HomeCubit>().phoneNumber,
-                communitiesRepo: getIt()
-              ),
-              child: const CommunitiesView(),
-            );
+          } else if (state is HomeChangeIndex && state.index == 0) {
+            return communitiesView;
           } else if (state is HomeChangeIndex && state.index == 3) {
             return Center(
               child: CustomButton(
                 text: "Logout",
-                onPressed: () => context.go(Routes.loginView.path),
+                onPressed: (){
+                  context.go(Routes.loginView.path);
+                  CacheService.logout();
+                },
               ),
             );
-          } else {
+          } else if (state is HomeChangeIndex && state.index == 1) {
             return const ChatsView();
+          } else {
+            return communitiesView;
           }
         },
       ),
@@ -65,21 +71,21 @@ class HomeView extends StatelessWidget {
                     icon: Padding(
                       padding: EdgeInsets.only(bottom: 2),
                       child: Icon(
-                        Icons.person_rounded,
-                        size: 29,
-                      ),
-                    ),
-                    label: 'Chats',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: EdgeInsets.only(bottom: 2.0),
-                      child: Icon(
                         Icons.groups_rounded,
                         size: 29,
                       ),
                     ),
                     label: 'Communities',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 2.0),
+                      child: Icon(
+                        Icons.person_rounded,
+                        size: 29,
+                      ),
+                    ),
+                    label: 'Chats',
                   ),
                   BottomNavigationBarItem(
                     icon: Padding(

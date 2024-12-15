@@ -1,6 +1,7 @@
 enum Routes{
   onboardingView('/'),
   loginView('/login'),
+  registerView('/register'),
   homeView('/home'),
   chatView('/chat');
 

@@ -22,7 +22,6 @@ class ChatRepo {
             );
           }).toList();
 
-          // Sort messages in descending order (newest first)
           messages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
           return messages;
         }

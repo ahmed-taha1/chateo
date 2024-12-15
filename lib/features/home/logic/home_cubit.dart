@@ -21,9 +21,9 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeChangeIndex(index));
   }
 
-  void fetchData({required String phoneNumber}) async {
+  void fetchData() async {
     emit(HomeLoading());
-    this.phoneNumber = phoneNumber;
+    phoneNumber = await homeRepo.getPhoneNumberFromCache();
     communities = await homeRepo.fetchCommunities(phoneNumber: phoneNumber);
     emit(HomeLoaded());
   }

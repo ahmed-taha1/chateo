@@ -7,6 +7,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'core/routing/app_router.dart';
+
 Future<void> foregroundNotificationHandler(RemoteMessage message) async {
   print('Handling a foreground message ${message.messageId}');
 }
@@ -19,7 +21,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
-  // await CacheService.init();
+  await CacheService.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -28,6 +30,7 @@ void main() async {
   }
   FirebaseMessaging.onMessage.listen(foregroundNotificationHandler);
   FirebaseMessaging.onBackgroundMessage(backgroundNotificationHandler);
+  await AppRouter.setInitialRoute();
   setupGetIt();
   runApp(const Chateo());
 }

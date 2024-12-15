@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:chateo/core/models/community.dart';
+import 'package:chateo/core/services/cache_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeRepo {
   final FirebaseFirestore fireStore;
-
   HomeRepo(this.fireStore);
 
   Future<List<Community>> fetchCommunities(
@@ -20,6 +20,9 @@ class HomeRepo {
       fireStore
           .collection('users')
           .add({'phoneNumber': phoneNumber, 'subscribed_communities': []});
+    }
+    else if(users.docs[0].data()['subscribed_communities'] == null){
+      users.docs[0].reference.update({'subscribed_communities': []});
     }
     log("fetching communities");
     for (var i in communities.docs) {
@@ -36,5 +39,9 @@ class HomeRepo {
       );
     }
     return ret;
+  }
+
+  Future<String> getPhoneNumberFromCache() async {
+    return await CacheService.getData(key: CacheServiceConstants.phoneNumber);
   }
 }

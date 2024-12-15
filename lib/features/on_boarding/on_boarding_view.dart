@@ -36,7 +36,7 @@ class OnBoardingView extends StatelessWidget {
               verticalSpace(180),
               CustomButton(
                 text: "Start Messaging",
-                onPressed: () => context.pushReplacement(Routes.loginView.path),
+                onPressed: () => context.go(Routes.loginView.path),
               ),
             ],
           ),
