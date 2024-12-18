@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:chateo/core/services/analytics_service.dart';
 import 'package:chateo/core/services/cache_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +9,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthRepo {
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _fireStore;
+  final AnalyticsService _analyticsService;
 
-  const AuthRepo(this._firebaseAuth, this._fireStore);
+  const AuthRepo(this._firebaseAuth, this._fireStore, this._analyticsService);
 
   Future<void> loginWithEmailAndPassword({
     required String email,
@@ -54,7 +56,7 @@ class AuthRepo {
   }) async {
     try {
       UserCredential credential =
-      await _firebaseAuth.createUserWithEmailAndPassword(
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -65,6 +67,7 @@ class AuthRepo {
         "phoneNumber": phoneNumber,
         "loginType": "email",
       });
+      _analyticsService.logFirstTimeLogin(phoneNumber);
     } catch (e) {
       rethrow;
     }
@@ -129,8 +132,8 @@ class AuthRepo {
     }
   }
 
-  Future<bool> addPhoneNumberToGoogleAccount(String userId,
-      String phoneNumber) async {
+  Future<bool> addPhoneNumberToGoogleAccount(
+      String userId, String phoneNumber) async {
     try {
       await _fireStore.collection("users").doc(userId).update({
         "phoneNumber": phoneNumber,
@@ -138,6 +141,7 @@ class AuthRepo {
       CacheService.putData(
           key: CacheServiceConstants.phoneNumber, value: phoneNumber);
       CacheService.putData(key: CacheServiceConstants.isLogged, value: true);
+      _analyticsService.logFirstTimeLogin(phoneNumber);
       return true;
     } catch (e) {
       rethrow;
@@ -145,10 +149,15 @@ class AuthRepo {
   }
 
   Future<void> sendOtp(String phoneNumber) async {
-    if(await isPhoneNumberExists(phoneNumber)){
-      var user = await _fireStore.collection("users").where("phoneNumber", isEqualTo: phoneNumber).get().then((value) => value.docs[0]);
-      if(user.data()["loginType"] != "phone"){
-        throw Exception("Phone number already exists with another account type");
+    if (await isPhoneNumberExists(phoneNumber)) {
+      var user = await _fireStore
+          .collection("users")
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get()
+          .then((value) => value.docs[0]);
+      if (user.data()["loginType"] != "phone") {
+        throw Exception(
+            "Phone number already exists with another account type");
       }
     }
     await _firebaseAuth.verifyPhoneNumber(
@@ -160,17 +169,20 @@ class AuthRepo {
         throw e;
       },
       codeSent: (String verificationId, int? resendToken) async {
-         await CacheService.putData(key: CacheServiceConstants.tempOtpToken, value: verificationId);
+        await CacheService.putData(
+            key: CacheServiceConstants.tempOtpToken, value: verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) async {
-        await CacheService.putData(key: CacheServiceConstants.tempOtpToken, value: verificationId);
+        await CacheService.putData(
+            key: CacheServiceConstants.tempOtpToken, value: verificationId);
       },
     );
   }
 
   Future<void> verifyOtp(String otp) async {
     try {
-      String? verificationId = CacheService.getData(key: CacheServiceConstants.tempOtpToken);
+      String? verificationId =
+          CacheService.getData(key: CacheServiceConstants.tempOtpToken);
       if (verificationId == null) {
         throw Exception("Verification id is null");
       }
@@ -184,15 +196,23 @@ class AuthRepo {
         throw Exception("Invalid OTP");
       }
 
-      if (!await _fireStore.collection("users").doc(userCred.user!.uid).get().then((value) => value.exists)) {
+      if (!await _fireStore
+          .collection("users")
+          .doc(userCred.user!.uid)
+          .get()
+          .then((value) => value.exists)) {
         await _fireStore.collection("users").doc(userCred.user!.uid).set({
           "uid": userCred.user!.uid,
           "phoneNumber": userCred.user!.phoneNumber,
           "loginType": "phone",
         });
       }
-      CacheService.putData(key: CacheServiceConstants.userId, value: userCred.user!.uid);
-      CacheService.putData(key: CacheServiceConstants.phoneNumber, value: userCred.user!.phoneNumber);
+      _analyticsService.logFirstTimeLogin(userCred.user!.phoneNumber!);
+      CacheService.putData(
+          key: CacheServiceConstants.userId, value: userCred.user!.uid);
+      CacheService.putData(
+          key: CacheServiceConstants.phoneNumber,
+          value: userCred.user!.phoneNumber);
       CacheService.putData(key: CacheServiceConstants.isLogged, value: true);
     } catch (e) {
       rethrow;

@@ -1,3 +1,4 @@
+import 'package:chateo/core/services/analytics_service.dart';
 import 'package:chateo/features/authentication/data/auth_repo.dart';
 import 'package:chateo/features/chat/data/chat_repo.dart';
 import 'package:chateo/features/communities/data/communities_repo.dart';
@@ -14,10 +15,11 @@ void setupGetIt() {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  final FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 
   getIt.registerLazySingleton<HomeRepo>(() => HomeRepo(fireStore));
-  getIt.registerLazySingleton<CommunitiesRepo>(() => CommunitiesRepo(firebaseMessaging, fireStore));
+  getIt.registerLazySingleton<CommunitiesRepo>(() => CommunitiesRepo(firebaseMessaging, fireStore, getIt<AnalyticsService>()));
   getIt.registerLazySingleton<ChatRepo>(() => ChatRepo(firebaseDatabase));
-  getIt.registerLazySingleton<AuthRepo>(() => AuthRepo(firebaseAuth, fireStore));
+  getIt.registerLazySingleton<AuthRepo>(() => AuthRepo(firebaseAuth, fireStore, getIt<AnalyticsService>()));
+  getIt.registerLazySingleton<AnalyticsService>(() => AnalyticsService());
 }
